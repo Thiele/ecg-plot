@@ -18,7 +18,8 @@ os.makedirs(tmp)
 
 atc_files = [f for f in os.listdir(path) if '.atc' in f]
 for f in atc_files:
-    pyatc.PyATC.read_file(f).write_edf_to_file(tmp+f+".edf")
+    pyatc.PyATC.read_file(f).write_json_to_file(tmp+f+".json")
+    pyatc.PyATC.read_json_file(tmp+f+".json").write_edf_to_file(tmp+f+".edf")
 
 files = [f for f in os.listdir(tmp) if '.edf' in f]
 df = pd.DataFrame()
@@ -42,7 +43,7 @@ df['std'] = df.std(axis = 1)
 
 drops = []
 cols = [c for c in df.columns if c not in ['mean_value', 'std']]
-n = 3
+n = 100
 for c in cols:
     if (df[c] <= (df['mean_value'] - n * df['std'])).sum() > 0 or (df[c] >= (df['mean_value'] + n * df['std'])).sum() > 0:
         drops.append(c)
